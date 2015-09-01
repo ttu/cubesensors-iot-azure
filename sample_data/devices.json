@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "devices": [
+    {"type": "cube", "uid": "000D6F0003141E14", "extra": {"roomtype": "live", "name": "Room one"}},
+    {"type": "cube", "uid": "000D6F000449336B", "extra": {"roomtype": "work", "name": "Library"}},
+    {"type": "cube", "uid": "000D6F000449280A", "extra": {"roomtype": "live", "name": "Kitchen"}},
+    {"type": "cube", "uid": "000D6F0003E4EC19", "extra": {"roomtype": "sleep", "name": "Room two"}},
+    {"type": "cube", "uid": "000D6F0004491FF6", "extra": {"roomtype": "live", "name": "Room three"}},
+    {"type": "cube", "uid": "000D6F0004476483", "extra": {"roomtype": "live", "name": "Attic"}}
+  ]
+}

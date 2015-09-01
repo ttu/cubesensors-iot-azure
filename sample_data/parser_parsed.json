@@ -1,0 +1,8 @@
+[
+  {"voc_resistance": 92021, "rssi": -79, "shake": false, "pressure": 1015, "light": 3, "noise": null, "noisedba": 47, "temp": 2259, "humidity": 52, "voc": 455, "id": "000D6F0003141E14", "battery": 59, "time": "2015-08-30T17:25:00Z", "cable": false},
+  {"voc_resistance": 74178, "rssi": -65, "shake": false, "pressure": 1013, "light": 8, "noise": null, "noisedba": 43, "temp": 2333, "humidity": 51, "voc": 458, "id": "000D6F000449336B", "battery": 55, "time": "2015-08-30T17:25:00Z", "cable": false},
+  {"voc_resistance": 94331, "rssi": -69, "shake": false, "pressure": 1014, "light": 1, "noise": null, "noisedba": 46, "temp": 2545, "humidity": 46, "voc": 471, "id": "000D6F000449280A", "battery": 57, "time": "2015-08-30T17:25:00Z", "cable": false},
+  {"voc_resistance": 84089, "rssi": -71, "shake": false, "pressure": 1012, "light": 60, "noise": null, "noisedba": 46, "temp": 2332, "humidity": 51, "voc": 656, "id": "000D6F0003E4EC19", "battery": 57, "time": "2015-08-30T17:25:00Z", "cable": false},
+  {"voc_resistance": 71431, "rssi": -79, "shake": false, "pressure": 1013, "light": 5, "noise": null, "noisedba": 44, "temp": 2397, "humidity": 50, "voc": 457, "id": "000D6F0004491FF6", "battery": 62, "time": "2015-08-30T17:25:00Z", "cable": false},
+  {"voc_resistance": 70953, "rssi": -86, "shake": false, "pressure": 1014, "light": 4, "noise": null, "noisedba": 46, "temp": 2238, "humidity": 54, "voc": 450, "id": "000D6F0004476483", "battery": 54, "time": "2015-08-30T17:25:00Z", "cable": false}
+]
