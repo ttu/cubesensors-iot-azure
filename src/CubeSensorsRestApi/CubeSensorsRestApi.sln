@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CubeSensorsRestApi", "CubeSensorsRestApi\CubeSensorsRestApi.fsproj", "{45F53BD8-58E5-40B2-9BAC-8464164B4892}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CubeSensorsRestApi.Test", "CubeSensorsRestApi.Test\CubeSensorsRestApi.Test.fsproj", "{7B5D580B-FF35-4C33-A4D6-8A466DA8A308}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{45F53BD8-58E5-40B2-9BAC-8464164B4892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45F53BD8-58E5-40B2-9BAC-8464164B4892}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45F53BD8-58E5-40B2-9BAC-8464164B4892}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45F53BD8-58E5-40B2-9BAC-8464164B4892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B5D580B-FF35-4C33-A4D6-8A466DA8A308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B5D580B-FF35-4C33-A4D6-8A466DA8A308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B5D580B-FF35-4C33-A4D6-8A466DA8A308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B5D580B-FF35-4C33-A4D6-8A466DA8A308}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
