@@ -7,6 +7,11 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CubeSensorsRestApi", "CubeS
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CubeSensorsRestApi.Test", "CubeSensorsRestApi.Test\CubeSensorsRestApi.Test.fsproj", "{7B5D580B-FF35-4C33-A4D6-8A466DA8A308}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FD7C48C1-338C-4334-9355-1235F57F4BFE}"
+	ProjectSection(SolutionItems) = preProject
+		README.txt = README.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
