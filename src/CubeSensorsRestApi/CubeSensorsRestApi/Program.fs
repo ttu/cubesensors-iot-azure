@@ -2,6 +2,7 @@
 open Suave.Http
 open Suave.Http.Applicatives
 open Suave.Http.Successful
+open Suave.Utils
 open Suave.Web
 open Newtonsoft.Json
 open Newtonsoft.Json.Serialization
@@ -15,6 +16,9 @@ let JSON content =
   |> OK
   >>= Writers.setMimeType "application/json; charset=utf-8"
 
+let basicAuth =
+  Authentication.authenticateBasic (fun (x) -> Seq.exists (fun y -> y = x) Config.Users)
+  
 let app =
   choose
     [ GET >>= choose
@@ -25,10 +29,16 @@ let app =
           pathScan "/api/v1/sensor/%s/%d" (fun (id, min) -> JSON (Db.AllDataFromDuration(id, min)))
           pathScan "/api/v1/temperature/avg/%s/%d" (fun (id, min) -> JSON (Db.AvgTemperature(id, min)))
           pathScan "/api/v1/temperature/%s/%d" (fun (id, min) -> JSON (Db.TemperatureValuesFromDuration(id, min)))
+          basicAuth // from here on it will require authentication
+          path "/test" >>= OK "Tests!"
         ]
       POST >>= choose
         [ path "/api/v1/hello" >>= OK "Hello POST"
-          path "/api/v1/goodbye" >>= OK "Good bye POST" ] ]
+          path "/api/v1/goodbye" >>= OK "Good bye POST"
+       ] 
+    ]
 
-startWebServer defaultConfig app
-    
+[<EntryPoint>]
+let main argv =
+    startWebServer defaultConfig app
+    0    
