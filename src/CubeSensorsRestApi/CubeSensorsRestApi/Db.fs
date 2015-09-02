@@ -9,18 +9,36 @@ type SqlConnection = Microsoft.FSharp.Data.TypeProviders.SqlDataConnection<Conne
 
 let runtimeConnStr = Config.LocalDb
 
+// If connection string is LocalDb, we will assume this is for development use
+let isDevTime = runtimeConnStr = Config.LocalDb
+
 let GetDb () = SqlConnection.GetDataContext(runtimeConnStr)
 
-let allDataForSensor (sensorId:string) = query {
-    for r in GetDb().Cubesensors_data do
-    where (r.SensorId = sensorId)
-    select r
+let LastUpdate() = 
+    query {
+        for r in GetDb().Cubesensors_data do
+        sortByDescending r.MeasurementTime 
+        select r.MeasurementTime
+        head
     }
 
-let dataForSensor (sensorId:string, minutes:int) = query {
-    for r in GetDb().Cubesensors_data do
-    where (r.SensorId = sensorId && r.MeasurementTime > DateTime.UtcNow.Subtract(TimeSpan.FromMinutes((float)minutes)))
-    select r
+let getCurrentTime() =
+    match isDevTime with
+    | true -> LastUpdate()
+    | false -> DateTime.UtcNow
+
+let allDataForSensor (sensorId:string) = 
+    query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId)
+        select r
+    }
+
+let dataForSensor (sensorId:string, minutes:int) = 
+    query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId && r.MeasurementTime > getCurrentTime().Subtract(TimeSpan.FromMinutes((float)minutes)))
+        select r
     }
 
 let GetSensorIds() = 
@@ -52,7 +70,7 @@ let AvgTemperature(sensorId:string, minutes:int) =
     query {
         for r in GetDb().Cubesensors_data do
         where (r.SensorId = sensorId && 
-               r.MeasurementTime > DateTime.UtcNow.Subtract(TimeSpan.FromMinutes((float)minutes)) && 
+               r.MeasurementTime > getCurrentTime().Subtract(TimeSpan.FromMinutes((float)minutes)) && 
                r.Temperature.HasValue)
         averageBy (float r.Temperature.Value)
         }

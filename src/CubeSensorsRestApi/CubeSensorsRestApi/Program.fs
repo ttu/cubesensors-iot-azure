@@ -22,15 +22,17 @@ let basicAuth =
 let app =
   choose
     [ GET >>= choose
-        [ path "/api/v1" >>= OK "Hello World!"
-          path "/api/v1/goodbye" >>= OK "Good bye GET"
+        [ 
+          path "/" >>= OK "Hello!"
+          path "/login" >>= OK "This should have some login info"
+          path "/goodbye" >>= OK "Good bye!"
           path "/api/v1/sensor" >>= JSON (Db.GetSensorIds())
           pathScan "/api/v1/sensor/%s" (fun (id) -> JSON (Db.AllSensorData(id)))
           pathScan "/api/v1/sensor/%s/%d" (fun (id, min) -> JSON (Db.AllDataFromDuration(id, min)))
           pathScan "/api/v1/temperature/avg/%s/%d" (fun (id, min) -> JSON (Db.AvgTemperature(id, min)))
           pathScan "/api/v1/temperature/%s/%d" (fun (id, min) -> JSON (Db.TemperatureValuesFromDuration(id, min)))
           basicAuth // from here on it will require authentication
-          path "/test" >>= OK "Tests!"
+          path "/api/v1/last" >>= JSON (Db.LastUpdate())
         ]
       POST >>= choose
         [ path "/api/v1/hello" >>= OK "Hello POST"

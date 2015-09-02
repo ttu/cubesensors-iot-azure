@@ -1,7 +1,11 @@
 # CubeSensors IoT Azure
 
-* Python parser
-  * Gets data from CubesensorsAPI, parses data to selected format and sends it to Event Hub.
+* python_parser
+  * Python Parser
+  * Gets data from CubeSensorsAPI, parses data to selected format and sends it to Event Hub.
+* CubeSensorsRestApi
+  * F# REST API (Suave)
+  * Gets data from database. Simple authentication.
 * Azure
   * Stream Analytics fetches data from Event Hub and sends it to SQL Server.
 

@@ -11,6 +11,13 @@ let GetSensorIds () =
     Assert.AreEqual(itemCount, 6)
 
 [<Test>]
+let AllDataFromDuration () =
+    let time = 30
+    let t = Db.AllDataFromDuration("000D5F000139280E", time)
+    let itemCount = List.length(Seq.toList t)
+    Assert.IsTrue(itemCount > time - 1)
+
+[<Test>]
 let AllSensorData () =
     let t = Db.AllSensorData("000D5F000139280E")
     let itemCount = List.length(Seq.toList t)
@@ -20,3 +27,8 @@ let AllSensorData () =
 let AvgTemperature () =
     let avg = Db.AvgTemperature("000D5F000139280E", 60*24*30)
     Assert.IsTrue(avg > 0.0)
+
+[<Test>]
+let LastUpdate () =
+    let latest = Db.LastUpdate()
+    Assert.IsTrue(latest < DateTime.UtcNow)
