@@ -54,17 +54,27 @@ let AllSensorData(sensorId:string) =
 let AllDataFromDuration(sensorId:string, minutes:int) =
     dataForSensor(sensorId, minutes)
 
+// Use record type to return values. This way JSON won't have item1 and item2.
+type Record = {
+    Time : DateTime;
+    Value : int;
+}
+
+// Better way would be to define field in query, but don't know how to use (property x) in query
 let PropertyValuesFromDuration(sensorId:string, minutes:int, property:SqlConnection.ServiceTypes.Cubesensors_data -> Nullable<int>) =
     let data = dataForSensor(sensorId, minutes)
     data
         |> Seq.filter (fun x -> (property x).HasValue)
-        |> Seq.map (fun x -> x.MeasurementTime, (property x).Value)
+        |> Seq.map (fun x -> { Record.Time = x.MeasurementTime; Record.Value = (property x).Value})
 
 let NoiseValuesFromDuration(sensorId:string, minutes:int) =
     PropertyValuesFromDuration(sensorId, minutes, (fun x -> x.Noise))
 
 let TemperatureValuesFromDuration(sensorId:string, minutes:int) =
     PropertyValuesFromDuration(sensorId, minutes, (fun x -> x.Temperature))
+
+let VocValuesFromDuration(sensorId:string, minutes:int) =
+    PropertyValuesFromDuration(sensorId, minutes, (fun x -> x.Voc))
 
 let AvgTemperature(sensorId:string, minutes:int) =
     query {
@@ -75,6 +85,25 @@ let AvgTemperature(sensorId:string, minutes:int) =
         averageBy (float r.Temperature.Value)
         }
 
+let AvgNoise(sensorId:string, minutes:int) =
+    query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId && 
+               r.MeasurementTime > getCurrentTime().Subtract(TimeSpan.FromMinutes((float)minutes)) && 
+               r.Noise.HasValue)
+        averageBy (float r.Noise.Value)
+        }
+
+let AvgVoc(sensorId:string, minutes:int) =
+    query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId && 
+               r.MeasurementTime > getCurrentTime().Subtract(TimeSpan.FromMinutes((float)minutes)) && 
+               r.Voc.HasValue)
+        averageBy (float r.Voc.Value)
+        }
+
+// Better to let SQL Server handle filtering
 //let allData () = query {
 //    for r in GetDb().Cubesensors_data do
 //    select r
@@ -84,7 +113,6 @@ let AvgTemperature(sensorId:string, minutes:int) =
 //    allData ()
 //        |> Seq.filter (fun x -> x.SensorId = sensorId)
 
-// Better to let SQL Server handle filtering (use dataForSensor)
 //let AllDataFromDuration(sensorId:string, minutes:int) =
 //    allData ()
 //        |> Seq.filter (fun x -> x.SensorId = sensorId)

@@ -31,6 +31,10 @@ let app =
           pathScan "/api/v1/sensor/%s/%d" (fun (id, min) -> JSON (Db.AllDataFromDuration(id, min)))
           pathScan "/api/v1/temperature/avg/%s/%d" (fun (id, min) -> JSON (Db.AvgTemperature(id, min)))
           pathScan "/api/v1/temperature/%s/%d" (fun (id, min) -> JSON (Db.TemperatureValuesFromDuration(id, min)))
+          pathScan "/api/v1/noise/avg/%s/%d" (fun (id, min) -> JSON (Db.AvgNoise(id, min)))
+          pathScan "/api/v1/noise/%s/%d" (fun (id, min) -> JSON (Db.NoiseValuesFromDuration(id, min)))
+          pathScan "/api/v1/voc/avg/%s/%d" (fun (id, min) -> JSON (Db.AvgVoc(id, min)))
+          pathScan "/api/v1/voc/%s/%d" (fun (id, min) -> JSON (Db.VocValuesFromDuration(id, min)))
           basicAuth // from here on it will require authentication
           path "/api/v1/last" >>= JSON (Db.LastUpdate())
         ]

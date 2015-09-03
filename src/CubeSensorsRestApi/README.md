@@ -27,12 +27,13 @@ pip install httpie
 http 127.0.0.1:8083/api/v1/sensor
 # Get all data for sensor
 http 127.0.0.1:8083/api/v1/sensor/000D4F0004E764C3
-# Get all data for sensor
-http 127.0.0.1:8083/api/v1/sensor/000D4F0004E764C3/100000
-# Get all temperature points (time, temperature)
-http 127.0.0.1:8083/api/v1/temperature/000D4F0004E764C3/100000
-# Get average temperature
-http 127.0.0.1:8083/api/v1/temperature/avg/000D4F0004E764C3/100000
+# Get all data for sensor from last 60 min
+http 127.0.0.1:8083/api/v1/sensor/000D4F0004E764C3/60
+# Get all value points (time, value) from X min
+http 127.0.0.1:8083/api/v1/temperature/000D4F0004E764C3/1440
+http 127.0.0.1:8083/api/v1/noise/000D4F0004E764C3/30
+# Get average temperature from last day
+http 127.0.0.1:8083/api/v1/temperature/avg/000D4F0004E764C3/1440
 # Get last update time
 http 127.0.0.1:8083/api/v1/last -a foo:bar
 ```

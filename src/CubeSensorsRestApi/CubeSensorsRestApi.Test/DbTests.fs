@@ -15,7 +15,7 @@ let AllDataFromDuration () =
     let time = 30
     let t = Db.AllDataFromDuration("000D5F000139280E", time)
     let itemCount = List.length(Seq.toList t)
-    Assert.IsTrue(itemCount > time - 1)
+    Assert.AreEqual(itemCount, time - 1)
 
 [<Test>]
 let AllSensorData () =
@@ -24,8 +24,20 @@ let AllSensorData () =
     Assert.IsTrue(itemCount > 0)
 
 [<Test>]
+let TemperatureValuesFromDuration() =
+    let time = 30
+    let values = Db.TemperatureValuesFromDuration("000D5F000139280E", time)
+    let itemCount = List.length(Seq.toList values)
+    Assert.AreEqual(itemCount, (time - 1))
+
+[<Test>]
 let AvgTemperature () =
     let avg = Db.AvgTemperature("000D5F000139280E", 60*24*30)
+    Assert.IsTrue(avg > 0.0)
+
+[<Test>]
+let AvgNoise () =
+    let avg = Db.AvgNoise("000D5F000139280E", 60*24)
     Assert.IsTrue(avg > 0.0)
 
 [<Test>]
