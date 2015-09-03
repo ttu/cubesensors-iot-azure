@@ -5,6 +5,22 @@
 * sys.path.append is required by Azure Web Jobs. Web Jobs require that all packages are provided to it in the zip file.
   * env\Lib\site-packages is virtual env path in Windows
 
+#### keys.py
+
+keys.py is not in version control. Add it manually.
+
+```py
+cube_consumer_key = "VALUE"
+cube_consumer_secret = "VALUE"
+
+cube_oauth_verifier = "VALUE"
+cube_access_token = "VALUE"
+cube_access_token_secret = "VALUE"
+
+azure_servicebus_namespace = "VALUE"
+cubesender_private_key = "VALUE"
+```
+
 #### VirtualEnv (Windows)
 
 When having multiple Python versions installed, define which one to use when creating VirtualEnv
