@@ -1,4 +1,11 @@
-### VirtualEnv (Windows)
+#### Azure requirements
+
+* Azure Web Jobs will execute first file, so thats why this is named aa_XXXX.py
+  * Maybe possible to define in settings.job?
+* sys.path.append is required by Azure Web Jobs. Web Jobs require that all packages are provided to it in the zip file.
+  * env\Lib\site-packages is virtual env path in Windows
+
+#### VirtualEnv (Windows)
 
 When having multiple Python versions installed, define which one to use when creating VirtualEnv
 
@@ -10,7 +17,7 @@ python XXXX.py
 env\Scripts\deactivate
 ```
 
-### Tests
+#### Tests
 
 Exeute tests with nose. Use -s if you want to see prints in output.
 
@@ -18,7 +25,7 @@ Exeute tests with nose. Use -s if you want to see prints in output.
 nosetests -s
 ```
 
-Execute single tests
+Execute single test
 
 ```sh
 nosetests -s tests/cube_parser_tests.py:CubeParserTests.test_current_real_data
