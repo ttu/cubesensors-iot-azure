@@ -44,3 +44,8 @@ let AvgNoise () =
 let LastUpdate () =
     let latest = Db.LastUpdate()
     Assert.IsTrue(latest < DateTime.UtcNow)
+
+[<Test>]
+let GetSensorStatus () =
+    let statusList = Db.GetSensorStatus(Db.getCurrentTime())
+    Assert.AreEqual(snd (Seq.head statusList), Db.Status.Ok)

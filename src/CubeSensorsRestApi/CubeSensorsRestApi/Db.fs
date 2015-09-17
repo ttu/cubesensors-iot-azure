@@ -60,6 +60,8 @@ type Record = {
     Value : int;
 }
 
+type Status = Ok | Charge | Charging | Unplug | NotConnected
+
 // Better way would be to define field in query, but don't know how to use (property x) in query
 let PropertyValuesFromDuration(sensorId:string, minutes:int, property:SqlConnection.ServiceTypes.Cubesensors_data -> Nullable<int>) =
     let data = dataForSensor(sensorId, minutes)
@@ -103,31 +105,16 @@ let AvgVoc(sensorId:string, minutes:int) =
         averageBy (float r.Voc.Value)
         }
 
-// Better to let SQL Server handle filtering
-//let allData () = query {
-//    for r in GetDb().Cubesensors_data do
-//    select r
-//    }
-
-//let AllSensorData(sensorId:string) =
-//    allData ()
-//        |> Seq.filter (fun x -> x.SensorId = sensorId)
-
-//let AllDataFromDuration(sensorId:string, minutes:int) =
-//    allData ()
-//        |> Seq.filter (fun x -> x.SensorId = sensorId)
-//        |> Seq.filter (fun x -> x.MeasurementTime > DateTime.UtcNow.Subtract(TimeSpan.FromMinutes((float)minutes)))
-
-//let PropertyAvg(sensorId:string, minutes:int, property:SqlConnection.ServiceTypes.Cubesensors_data -> Nullable<int>) : float =
-//    allData ()
-//        |> Seq.filter (fun x -> x.SensorId = sensorId)
-//        |> Seq.filter (fun x -> (property x).HasValue)
-//        |> Seq.filter (fun x -> x.MeasurementTime > DateTime.UtcNow.Subtract(TimeSpan.FromMinutes((float)minutes)))
-//        |> Seq.map (fun x -> (property x).Value)
-//        |> Seq.averageBy (fun x -> (float)x)
-
-//let AvgTemperature(sensorId:string, minutes:int) =
-//    PropertyAvg(sensorId, minutes, (fun x -> x.Temperature))
-//
-//let AvgNoise(sensorId:string, minutes:int) =
-//    PropertyAvg(sensorId, minutes, (fun x -> x.Noise))
+let GetSensorStatus(time:DateTime) =
+    let data = query {
+        for r in GetDb().Cubesensors_data do
+        where (r.MeasurementTime = time && r.Battery.HasValue && r.Cable.HasValue)
+        select (r.SensorId, r.Battery.Value, r.Cable.Value)
+        }
+    data
+        |> Seq.map (fun x -> 
+            match x with 
+            | (id, bat, cbl) when bat < 10 && cbl = 0 -> id, Status.Charge
+            | (id, bat, cbl) when bat > 96 && cbl = 1 -> id, Status.Unplug
+            | (id, bat, cbl) when cbl = 1 -> id, Status.Charging
+            | (id, bat, cbl) -> id, Status.Ok)

@@ -27,6 +27,7 @@ let app =
           path "/login" >>= OK "This should have some login info"
           path "/goodbye" >>= OK "Good bye!"
           path "/api/v1/sensor" >>= JSON (Db.GetSensorIds())
+          path "/api/v1/sensor/status" >>= JSON (Db.GetSensorStatus(Db.getCurrentTime()))
           pathScan "/api/v1/sensor/%s" (fun (id) -> JSON (Db.AllSensorData(id)))
           pathScan "/api/v1/sensor/%s/%d" (fun (id, min) -> JSON (Db.AllDataFromDuration(id, min)))
           pathScan "/api/v1/temperature/avg/%s/%d" (fun (id, min) -> JSON (Db.AvgTemperature(id, min)))
