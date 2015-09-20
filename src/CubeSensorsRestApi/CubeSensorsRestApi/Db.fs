@@ -60,7 +60,7 @@ type Record = {
     Value : int;
 }
 
-type Status = Ok | Charge | Charging | Unplug | NotConnected
+type Status = Ok | Charge | Charging | Unplug | Unknown
 
 // Better way would be to define field in query, but don't know how to use (property x) in query
 let PropertyValuesFromDuration(sensorId:string, minutes:int, property:SqlConnection.ServiceTypes.Cubesensors_data -> Nullable<int>) =
@@ -118,3 +118,17 @@ let GetSensorStatus(time:DateTime) =
             | (id, bat, cbl) when bat > 96 && cbl = 1 -> id, Status.Unplug
             | (id, bat, cbl) when cbl = 1 -> id, Status.Charging
             | (id, bat, cbl) -> id, Status.Ok)
+
+let createAllIdStatusList(current, allIds) =
+     allIds
+        |> Seq.map(fun x -> 
+            match x with
+                | id when (Seq.exists (fun y -> fst y = id) current) -> id, snd (Seq.head (Seq.filter (fun i -> fst i = x) current))
+                | _ -> x, Status.Unknown
+            )
+
+let GetLeatestStatuses() =
+    let current = GetSensorStatus(getCurrentTime())
+    let allIds = GetSensorIds()
+    createAllIdStatusList(current, allIds)
+

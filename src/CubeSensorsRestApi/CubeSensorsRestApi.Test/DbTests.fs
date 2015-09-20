@@ -49,3 +49,15 @@ let LastUpdate () =
 let GetSensorStatus () =
     let statusList = Db.GetSensorStatus(Db.getCurrentTime())
     Assert.AreEqual(snd (Seq.head statusList), Db.Status.Ok)
+
+[<Test>]
+let GetLeatestStatuses() = 
+    let current = Db.GetSensorStatus(Db.getCurrentTime())
+    let allIds = Db.GetSensorIds()
+    let mockId = "ABCDEFG12345"
+    let mockIds = allIds |> Seq.toList |> List.append [mockId]
+    let statuses = Db.createAllIdStatusList(current, mockIds)
+
+    Assert.AreEqual(fst (Seq.head statuses), mockId)
+    Assert.AreEqual(snd (Seq.head statuses), Db.Status.Unknown)
+    Assert.AreEqual(snd (Seq.head (Seq.rev statuses)), Db.Status.Ok)
