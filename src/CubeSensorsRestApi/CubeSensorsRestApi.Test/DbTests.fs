@@ -13,31 +13,36 @@ let GetSensorIds () =
 [<Test>]
 let AllDataFromDuration () =
     let time = 30
-    let t = Db.AllDataFromDuration("000D5F000139280E", time)
+    let t = Db.AllDataFromDuration("000D6F0003141E25", time)
     let itemCount = List.length(Seq.toList t)
     Assert.AreEqual(itemCount, time - 1)
 
 [<Test>]
 let AllSensorData () =
-    let t = Db.AllSensorData("000D5F000139280E")
+    let t = Db.AllSensorData("000D6F0003141E25")
     let itemCount = List.length(Seq.toList t)
     Assert.IsTrue(itemCount > 0)
 
 [<Test>]
 let TemperatureValuesFromDuration() =
     let time = 30
-    let values = Db.TemperatureValuesFromDuration("000D5F000139280E", time)
+    let values = Db.TemperatureValuesFromDuration("000D6F0003141E25", time)
     let itemCount = List.length(Seq.toList values)
     Assert.AreEqual(itemCount, (time - 1))
 
 [<Test>]
 let AvgTemperature () =
-    let avg = Db.AvgTemperature("000D5F000139280E", 60*24*30)
+    let avg = Db.AvgTemperature("000D6F0003141E25", 60*24*30)
     Assert.IsTrue(avg > 0.0)
 
 [<Test>]
 let AvgNoise () =
-    let avg = Db.AvgNoise("000D5F000139280E", 60*24)
+    let avg = Db.AvgNoise("000D6F0003141E25", 60*24)
+    Assert.IsTrue(avg > 0.0)
+
+[<Test>]
+let AvgNoiseDaily() =
+    let avg = Db.AvgNoiseDaily("000D6F0003141E25")
     Assert.IsTrue(avg > 0.0)
 
 [<Test>]

@@ -3,6 +3,7 @@
 open System
 open System.Data
 open System.Data.Linq
+open System.Linq
 open Microsoft.FSharp.Data.TypeProviders
 
 type SqlConnection = Microsoft.FSharp.Data.TypeProviders.SqlDataConnection<ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=C:\SRC\GITHUB\CUBESENSORS-IOT-AZURE\SAMPLE_DATA\CUBE_DB.MDF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False">
@@ -104,6 +105,28 @@ let AvgVoc(sensorId:string, minutes:int) =
                r.Voc.HasValue)
         averageBy (float r.Voc.Value)
         }
+
+let AvgNoiseDaily(sensorId:string) =
+    let dateQuery = query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId && r.Noise.HasValue)     
+        groupBy (r.MeasurementTime.Date) into group
+        where (group.Count() > 1400) // 60 * 24 = 1440
+        sortBy group.Key
+        select (group.Key)
+        take 5 // Select 5 last days that had enough data points
+    }
+
+    let dates = dateQuery |> Seq.toList
+
+    match dates.Length with
+        | 0 -> 0.0
+        | _ ->  query {
+                    for r in GetDb().Cubesensors_data do
+                    where (r.SensorId = sensorId && dates.Contains(r.MeasurementTime.Date))
+                    averageBy (float r.Noise.Value)
+                }
+    
 
 let GetSensorStatus(time:DateTime) =
     let data = query {
