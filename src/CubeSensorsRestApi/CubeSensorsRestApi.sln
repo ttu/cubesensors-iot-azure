@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{C7C1DE3E-A1B7-41BA-8909-3EFF0CDF896D}"
+	ProjectSection(SolutionItems) = preProject
+		paket.dependencies = paket.dependencies
+	EndProjectSection
+EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CubeSensorsRestApi", "CubeSensorsRestApi\CubeSensorsRestApi.fsproj", "{45F53BD8-58E5-40B2-9BAC-8464164B4892}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CubeSensorsRestApi.Test", "CubeSensorsRestApi.Test\CubeSensorsRestApi.Test.fsproj", "{7B5D580B-FF35-4C33-A4D6-8A466DA8A308}"

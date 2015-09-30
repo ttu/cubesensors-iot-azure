@@ -1,0 +1,8 @@
+source https://nuget.org/api/v2
+
+nuget FAKE
+nuget FSharp.Core 4.0.0.1 framework: >= net452
+nuget FsPickler 1.2.5 framework: >= net452
+nuget Newtonsoft.Json 7.0.1 framework: >= net452
+nuget NUnit 2.6.4 framework: >= net452
+nuget Suave 0.31.1 framework: >= net452

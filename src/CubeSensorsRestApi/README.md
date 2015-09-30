@@ -14,6 +14,16 @@ let Users = [("foo", "bar"); ("bill", "temple")]
 ## SQL type provider
 https://msdn.microsoft.com/en-us/library/hh361033.aspx
 
+
+## From nuget to Paket
+http://fsprojects.github.io/Paket/getting-started.html
+https://fsprojects.github.io/Paket/paket-convert-from-nuget.html
+
+```sh
+.paket\paket.bootstrapper.exe
+.paket\paket.exe install
+```
+
 ## Example requests
 
 Use HTTPie
