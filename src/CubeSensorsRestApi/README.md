@@ -17,10 +17,13 @@ https://msdn.microsoft.com/en-us/library/hh361033.aspx
 
 ## From nuget to Paket
 http://fsprojects.github.io/Paket/getting-started.html
+
 https://fsprojects.github.io/Paket/paket-convert-from-nuget.html
 
 ```sh
+# get paket.exe
 .paket\paket.bootstrapper.exe
+# install dependencies
 .paket\paket.exe install
 ```
 

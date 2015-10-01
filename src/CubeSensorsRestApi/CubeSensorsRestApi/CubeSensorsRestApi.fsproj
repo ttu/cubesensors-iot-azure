@@ -56,7 +56,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <None Include="App.config" />
-    <Content Include="packages.config" />
     <Compile Include="Config.fs" />
     <Compile Include="Db.fs" />
     <Compile Include="Program.fs" />
