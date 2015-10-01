@@ -2,8 +2,10 @@
 open Suave.Http
 open Suave.Http.Applicatives
 open Suave.Http.Successful
+open Suave.Types
 open Suave.Utils
 open Suave.Web
+open System.Net
 open Newtonsoft.Json
 open Newtonsoft.Json.Serialization
 
@@ -26,6 +28,7 @@ let app =
           path "/" >>= OK "Hello!"
           path "/login" >>= OK "This should have some login info"
           path "/goodbye" >>= OK "Good bye!"
+          basicAuth // from here on it will require authentication
           path "/api/v1/sensor" >>= JSON (Db.GetSensorIds())
           path "/api/v1/sensor/status" >>= JSON (Db.GetSensorStatus(Db.getCurrentTime()))
           pathScan "/api/v1/sensor/%s" (fun (id) -> JSON (Db.AllSensorData(id)))
@@ -36,7 +39,6 @@ let app =
           pathScan "/api/v1/noise/%s/%d" (fun (id, min) -> JSON (Db.NoiseValuesFromDuration(id, min)))
           pathScan "/api/v1/voc/avg/%s/%d" (fun (id, min) -> JSON (Db.AvgVoc(id, min)))
           pathScan "/api/v1/voc/%s/%d" (fun (id, min) -> JSON (Db.VocValuesFromDuration(id, min)))
-          basicAuth // from here on it will require authentication
           path "/api/v1/last" >>= JSON (Db.LastUpdate())
         ]
       POST >>= choose
@@ -47,5 +49,12 @@ let app =
 
 [<EntryPoint>]
 let main argv =
-    startWebServer defaultConfig app
+    match argv.Length with
+     | 0 -> startWebServer defaultConfig app
+     | _ -> let port = Sockets.Port.Parse <| argv.[0]
+            let serverConfig = 
+                { defaultConfig with
+                   bindings = [ HttpBinding.mk HTTP IPAddress.Loopback port ]
+                }
+            startWebServer serverConfig app
     0    
