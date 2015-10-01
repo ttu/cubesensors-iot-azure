@@ -25,7 +25,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Debug\CubeSensorsRestApi.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>8080</StartArguments>
+    <StartArguments>
+    </StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -173,6 +174,7 @@
     <None Include="App.config" />
     <Compile Include="Config.fs" />
     <Compile Include="Db.fs" />
+    <Compile Include="Gecko.fs" />
     <Compile Include="Program.fs" />
     <Content Include="web.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
