@@ -2,6 +2,7 @@
 
 open System
 open NUnit.Framework
+open Program
 open Db
 
 [<Test>]
@@ -66,3 +67,12 @@ let GetLeatestStatuses() =
     Assert.AreEqual(fst (Seq.head statuses), mockId)
     Assert.AreEqual(snd (Seq.head statuses), Db.Status.Unknown)
     Assert.AreEqual(snd (Seq.head (Seq.rev statuses)), Db.Status.Ok)
+
+[<Test>]
+let ParserTests() =
+    let sId = "000D6F0003141E14" // "000D6F0003141E25"
+    let s1 = Parser.ParseNoiseAverages(sId)
+    let s2 = Parser.ParseTempeature(sId)
+    let avg = Db.AvgNoise(sId, 3)
+    let avgDaily = Db.AvgNoiseDaily(sId)
+    Assert.IsTrue(avg > avgDaily)

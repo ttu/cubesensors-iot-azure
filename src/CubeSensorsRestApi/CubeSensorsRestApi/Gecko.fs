@@ -49,6 +49,10 @@ type ListItem = {
     Description : string;
 }
 
-let WrapToNumber(content) =
-    let item = { NumberItem.Value = content.ToString(); NumberItem.Text = DateTime.Now.ToShortTimeString() }
+let WrapToNumber(content, text) =
+    let item = { NumberItem.Value = content; NumberItem.Text = text }
     { NumberItemContent.Item = [|item|] }
+
+let WrapToList(items) =
+    items
+        |> Seq.map (fun x -> { ListItem.Title = { ListTitle.Text = fst x }; ListItem.Label = { ListLabel.Color = ""; ListLabel.Name = "" }; ListItem.Description = snd x })

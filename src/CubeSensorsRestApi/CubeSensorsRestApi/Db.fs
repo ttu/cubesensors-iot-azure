@@ -8,10 +8,10 @@ open Microsoft.FSharp.Data.TypeProviders
 
 type SqlConnection = Microsoft.FSharp.Data.TypeProviders.SqlDataConnection<ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=C:\SRC\GITHUB\CUBESENSORS-IOT-AZURE\SAMPLE_DATA\CUBE_DB.MDF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False">
 
-let runtimeConnStr = Config.LocalDb
+let runtimeConnStr = Config.Azure
 
 // If connection string is LocalDb, we will assume this is for development use
-let isDevTime = runtimeConnStr = Config.LocalDb
+let isDevTime = true //runtimeConnStr = Config.LocalDb
 
 let GetDb () = SqlConnection.GetDataContext(runtimeConnStr)
 
@@ -106,19 +106,39 @@ let AvgVoc(sensorId:string, minutes:int) =
         averageBy (float r.Voc.Value)
         }
 
-let AvgNoiseDaily(sensorId:string) =
-    let dateQuery = query {
+let WeekDays = [ DayOfWeek.Monday; DayOfWeek.Tuesday; DayOfWeek.Wednesday; DayOfWeek.Thursday; DayOfWeek.Friday ]
+
+let AvgNoiseSelectedTime(sensorId:string, startHour: int, endHour:int, numberOfDays:int) =
+    query {
         for r in GetDb().Cubesensors_data do
-        where (r.SensorId = sensorId && r.Noise.HasValue)     
+        where (r.SensorId = sensorId && 
+                            r.Noise.HasValue && 
+                            WeekDays.Contains(r.MeasurementTime.DayOfWeek) &&
+                            r.MeasurementTime.Hour >= startHour &&
+                            r.MeasurementTime.Hour <= endHour)
         groupBy (r.MeasurementTime.Date) into group
-        where (group.Count() > 1400) // 60 * 24 = 1440
+        where (group.Count() > (endHour - startHour) * 60)
         sortBy group.Key
         select (group.Key)
-        take 5 // Select 5 last days that had enough data points
+        take numberOfDays
     }
 
-    let dates = dateQuery |> Seq.toList
+let AvgNoiseOnWorkTime(sensorId:string) =
+    AvgNoiseSelectedTime(sensorId, 8, 17, 5)
 
+let AvgNoiseAll(sensorId:string) =
+     query {
+            for r in GetDb().Cubesensors_data do
+            where (r.SensorId = sensorId && r.Noise.HasValue)     
+            groupBy (r.MeasurementTime.Date) into group
+            where (group.Count() > 1400) // 60 * 24 = 1440
+            sortBy group.Key
+            select (group.Key)
+            take 5 // Select 5 last days that had enough data points
+        }
+
+let AvgNoiseDaily(sensorId:string) =
+    let dates = AvgNoiseOnWorkTime(sensorId) |> Seq.toList
     match dates.Length with
         | 0 -> 0.0
         | _ ->  query {
@@ -126,7 +146,6 @@ let AvgNoiseDaily(sensorId:string) =
                     where (r.SensorId = sensorId && dates.Contains(r.MeasurementTime.Date))
                     averageBy (float r.Noise.Value)
                 }
-    
 
 let GetSensorStatus(time:DateTime) =
     let data = query {

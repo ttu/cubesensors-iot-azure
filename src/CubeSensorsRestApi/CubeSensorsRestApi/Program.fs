@@ -5,11 +5,10 @@ open Suave.Http.Successful
 open Suave.Types
 open Suave.Utils
 open Suave.Web
+open System
 open System.Net
 open Newtonsoft.Json
 open Newtonsoft.Json.Serialization
-
-open Db
 
 let JSON content =
   let jsonSerializerSettings = new JsonSerializerSettings()
@@ -20,7 +19,7 @@ let JSON content =
 
 let basicAuth =
   Authentication.authenticateBasic (fun (x) -> Seq.exists (fun y -> y = x) Config.Users)
-  
+ 
 let app =
   choose
     [ GET >>= choose
@@ -42,8 +41,10 @@ let app =
           pathScan "/api/v1/voc/%s/%d" (fun (id, min) -> JSON (Db.VocValuesFromDuration(id, min)))
           path "/api/v1/last" >>= JSON (Db.LastUpdate())
           // These are Geckboard specifig
-          pathScan "/api/v1.1/noise/avg/%s" (fun (id) -> JSON (Gecko.WrapToNumber (Db.AvgNoiseDaily(id))))
-
+          path "/api/v1.1/list" >>= JSON (Parser.ParseAll())
+          pathScan "/api/v1.1/temperature/%s" (fun (id) -> JSON (Parser.ParseTempeature(id)))
+          pathScan "/api/v1.1/noise/%s" (fun (id) -> JSON (Parser.ParseNoiseAverages(id)))
+          pathScan "/api/v1.1/noise/avg/%s" (fun (id) -> JSON (Gecko.WrapToNumber (Db.AvgNoiseDaily(id).ToString(), DateTime.Now.ToShortTimeString())))
         ]
       POST >>= choose
         [ path "/api/v1/hello" >>= OK "Hello POST"

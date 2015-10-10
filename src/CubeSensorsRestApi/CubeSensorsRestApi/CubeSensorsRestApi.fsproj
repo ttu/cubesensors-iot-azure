@@ -175,6 +175,7 @@
     <Compile Include="Config.fs" />
     <Compile Include="Db.fs" />
     <Compile Include="Gecko.fs" />
+    <Compile Include="Parser.fs" />
     <Compile Include="Program.fs" />
     <Content Include="web.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
