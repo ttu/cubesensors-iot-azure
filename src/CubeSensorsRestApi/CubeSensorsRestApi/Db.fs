@@ -8,10 +8,10 @@ open Microsoft.FSharp.Data.TypeProviders
 
 type SqlConnection = Microsoft.FSharp.Data.TypeProviders.SqlDataConnection<ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=C:\SRC\GITHUB\CUBESENSORS-IOT-AZURE\SAMPLE_DATA\CUBE_DB.MDF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False">
 
-let runtimeConnStr = Config.Azure
+let runtimeConnStr = Config.LocalDb
 
 // If connection string is LocalDb, we will assume this is for development use
-let isDevTime = true //runtimeConnStr = Config.LocalDb
+let isDevTime = runtimeConnStr = Config.LocalDb
 
 let GetDb () = SqlConnection.GetDataContext(runtimeConnStr)
 
@@ -42,6 +42,34 @@ let dataForSensor (sensorId:string, minutes:int) =
         select r
     }
 
+let dataForSensorFromDates(sensorId:string, dates : List<DateTime>) =
+    query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId && dates.Contains(r.MeasurementTime.Date))
+        select r
+    }
+
+let averageNoiseForSensorFromDates(sensorId:string, dates : List<DateTime>) =
+    query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId && dates.Contains(r.MeasurementTime.Date))
+        averageBy (float r.Noise.Value)
+    }
+
+let averageTemperatureForSensorFromDates(sensorId:string, dates : List<DateTime>) =
+    query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId && dates.Contains(r.MeasurementTime.Date))
+        averageBy (float r.Temperature.Value)
+    }
+
+let averageVocForSensorFromDates(sensorId:string, dates : List<DateTime>) =
+    query {
+        for r in GetDb().Cubesensors_data do
+        where (r.SensorId = sensorId && dates.Contains(r.MeasurementTime.Date))
+        averageBy (float r.Voc.Value)
+    }
+
 let GetSensorIds() = 
     query {
         for r in GetDb().Cubesensors_data do
@@ -63,6 +91,21 @@ type Record = {
 
 type Status = Ok | Charge | Charging | Unplug | Unknown
 
+let StatusColor(status : Status) = 
+    match status with
+    | Status.Ok -> "green"
+    | Status.Charging -> "yellow"
+    | Status.Unplug -> "blue"
+    | Status.Charge -> "red"
+    | Status.Unknown -> "black"
+
+let WeekDays = [ DayOfWeek.Monday; DayOfWeek.Tuesday; DayOfWeek.Wednesday; DayOfWeek.Thursday; DayOfWeek.Friday ]
+
+let HandleAverageFunc(sensorId:string, dates : List<DateTime>, avgFunc) =
+     match dates.Length with
+        | 0 -> 0.0
+        | _ -> avgFunc(sensorId, dates)
+
 // Better way would be to define field in query, but don't know how to use (property x) in query
 let PropertyValuesFromDuration(sensorId:string, minutes:int, property:SqlConnection.ServiceTypes.Cubesensors_data -> Nullable<int>) =
     let data = dataForSensor(sensorId, minutes)
@@ -78,6 +121,8 @@ let TemperatureValuesFromDuration(sensorId:string, minutes:int) =
 
 let VocValuesFromDuration(sensorId:string, minutes:int) =
     PropertyValuesFromDuration(sensorId, minutes, (fun x -> x.Voc))
+
+// NOTE: F# queries can't be composed so should use Query Expression or something
 
 let AvgTemperature(sensorId:string, minutes:int) =
     query {
@@ -106,13 +151,10 @@ let AvgVoc(sensorId:string, minutes:int) =
         averageBy (float r.Voc.Value)
         }
 
-let WeekDays = [ DayOfWeek.Monday; DayOfWeek.Tuesday; DayOfWeek.Wednesday; DayOfWeek.Thursday; DayOfWeek.Friday ]
-
-let AvgNoiseSelectedTime(sensorId:string, startHour: int, endHour:int, numberOfDays:int) =
+let DaysWithEnoughData(sensorId:string, startHour: int, endHour:int, numberOfDays:int) =
     query {
         for r in GetDb().Cubesensors_data do
         where (r.SensorId = sensorId && 
-                            r.Noise.HasValue && 
                             WeekDays.Contains(r.MeasurementTime.DayOfWeek) &&
                             r.MeasurementTime.Hour >= startHour &&
                             r.MeasurementTime.Hour <= endHour)
@@ -123,8 +165,8 @@ let AvgNoiseSelectedTime(sensorId:string, startHour: int, endHour:int, numberOfD
         take numberOfDays
     }
 
-let AvgNoiseOnWorkTime(sensorId:string) =
-    AvgNoiseSelectedTime(sensorId, 8, 17, 5)
+let DaysWithEnoughDataOnWorkTime(sensorId:string) =
+    DaysWithEnoughData(sensorId, 8, 17, 5)
 
 let AvgNoiseAll(sensorId:string) =
      query {
@@ -138,14 +180,10 @@ let AvgNoiseAll(sensorId:string) =
         }
 
 let AvgNoiseDaily(sensorId:string) =
-    let dates = AvgNoiseOnWorkTime(sensorId) |> Seq.toList
-    match dates.Length with
-        | 0 -> 0.0
-        | _ ->  query {
-                    for r in GetDb().Cubesensors_data do
-                    where (r.SensorId = sensorId && dates.Contains(r.MeasurementTime.Date))
-                    averageBy (float r.Noise.Value)
-                }
+    let dates = DaysWithEnoughDataOnWorkTime(sensorId) |> Seq.toList
+    HandleAverageFunc(sensorId, dates, averageNoiseForSensorFromDates)
+//    dataForSensorFromDates(sensorId, dates)
+//        |> Seq.averageBy (fun x -> float x.Noise.Value) 
 
 let GetSensorStatus(time:DateTime) =
     let data = query {
@@ -169,7 +207,7 @@ let createAllIdStatusList(current, allIds) =
                 | _ -> x, Status.Unknown
             )
 
-let GetLeatestStatuses() =
+let GetLatestStatuses() =
     let current = GetSensorStatus(getCurrentTime())
     let allIds = GetSensorIds()
     createAllIdStatusList(current, allIds)

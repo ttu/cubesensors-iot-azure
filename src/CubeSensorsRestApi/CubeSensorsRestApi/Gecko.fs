@@ -55,4 +55,9 @@ let WrapToNumber(content, text) =
 
 let WrapToList(items) =
     items
-        |> Seq.map (fun x -> { ListItem.Title = { ListTitle.Text = fst x }; ListItem.Label = { ListLabel.Color = ""; ListLabel.Name = "" }; ListItem.Description = snd x })
+        |> Seq.map (fun x -> match x with 
+                                | (title, desc, label, color) -> { 
+                                                                    ListItem.Title = { ListTitle.Text = title }; 
+                                                                    ListItem.Label = { ListLabel.Color = color; ListLabel.Name = label }; 
+                                                                    ListItem.Description = desc
+                                                                 })

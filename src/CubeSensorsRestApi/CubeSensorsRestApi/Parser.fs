@@ -14,7 +14,6 @@ let ParseSensorName(id) =
         | "000D6F000449336B" -> "Room 6"
         | _ -> id
 
-
 let NoiseDiff(data : SqlConnection.ServiceTypes.Cubesensors_data) =
     let lastAvg = Db.AvgNoise(data.SensorId, 2)
     let dailyAvgNoise = Db.AvgNoiseDaily(data.SensorId)
@@ -35,6 +34,9 @@ let ParseAll() =
     let ids = Db.GetSensorIds()
     let data = ids
                 |> Seq.map (fun id -> Db.AllDataFromDuration(id, 1) |> Seq.toList |> List.head)
+
+    let statuses = Db.GetLatestStatuses()
+
     data
         |> Seq.map (fun x -> ParseSensorName(x.SensorId), // +  " (" + NoiseDiff(x) + ")", 
                                 (float x.Temperature.Value / 100.0).ToString() + " °C | " + 
@@ -42,6 +44,7 @@ let ParseAll() =
                                 x.Light.Value.ToString() + " lux | " +
                                 x.Pressure.Value.ToString() + " mBar | " +
                                 x.Humidity.Value.ToString() + " % | " +
-                                x.Voc.Value.ToString() + " ppm")
-//                                x.Rssi.Value.ToString() + " rssi")
+                                x.Voc.Value.ToString() + " ppm",
+                                x.Battery.Value.ToString(),
+                                statuses |> Seq.filter (fun (k,v) -> k = x.SensorId) |> Seq.head |> snd |> Db.StatusColor)
         |> Gecko.WrapToList

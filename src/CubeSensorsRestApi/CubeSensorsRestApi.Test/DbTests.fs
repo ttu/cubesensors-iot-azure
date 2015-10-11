@@ -57,7 +57,7 @@ let GetSensorStatus () =
     Assert.AreEqual(snd (Seq.head statusList), Db.Status.Ok)
 
 [<Test>]
-let GetLeatestStatuses() = 
+let GetLatestStatuses() = 
     let current = Db.GetSensorStatus(Db.getCurrentTime())
     let allIds = Db.GetSensorIds()
     let mockId = "ABCDEFG12345"
@@ -69,6 +69,12 @@ let GetLeatestStatuses() =
     Assert.AreEqual(snd (Seq.head (Seq.rev statuses)), Db.Status.Ok)
 
 [<Test>]
+let DaysWithDataWorkTime() =
+    let sId = "000D6F0003141E25"
+    let days = Db.AvgNoiseDaily(sId)
+    Assert.IsTrue(true)
+
+[<Test>]
 let ParserTests() =
     let sId = "000D6F0003141E14" // "000D6F0003141E25"
     let s1 = Parser.ParseNoiseAverages(sId)
@@ -76,3 +82,8 @@ let ParserTests() =
     let avg = Db.AvgNoise(sId, 3)
     let avgDaily = Db.AvgNoiseDaily(sId)
     Assert.IsTrue(avg > avgDaily)
+
+[<Test>]
+let WrapToList() =
+    let list = Gecko.WrapToList([("test", "test", "ok", "green")])
+    Assert.IsTrue(true)
