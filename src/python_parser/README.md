@@ -21,6 +21,15 @@ azure_servicebus_namespace = "VALUE"
 cubesender_private_key = "VALUE"
 ```
 
+#### VirtualEnv (Ubuntu)
+
+```sh
+apt-get install python-virtualenv
+virtualenv -p /usr/bin/python3 env
+source env/bin/activate
+pip install -r requirements.txt
+```
+
 #### VirtualEnv (Windows)
 
 When having multiple Python versions installed, define which one to use when creating VirtualEnv
@@ -46,3 +55,23 @@ Execute single test
 ```sh
 nosetests -s tests/cube_parser_tests.py:CubeParserTests.test_current_real_data
 ```
+
+#### Cron
+
+Open crontab
+
+```sh
+crontab -e
+```
+
+Add these lines to the file (source requires bash)
+
+```sh
+SHELL=/bin/bash
+* * * * * cd /home/stetson/python_parser && source env/bin/activate && python aa_azure_start.py
+```
+  
+Cron log
+```sh
+grep CRON /var/log/syslog
+ ```

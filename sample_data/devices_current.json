@@ -5,6 +5,11 @@
   "field_list": ["time", "temp", "pressure", "humidity", "voc", "light", "noise", "noisedba", "battery", "shake", "cable", "voc_resistance", "rssi"],
   "ok": true
 }
+{
+  "results": [], 
+  "ok": true, 
+  "field_list": []
+}
 {"results": [["2015-08-29T21:50:00Z", 2354, 1010, 52, 466, 0, null, 44, 60, false, false, 77415, -70]], "field_list": ["time", "temp", "pressure", "humidity", "voc", "light", "noise", "noisedba", "battery", "shake", "cable", "voc_resistance", "rssi"], "ok": true}
 {"results": [["2015-08-29T21:50:00Z", 2567, 1013, 47, 455, 0, null, 46, 61, false, false, 94428, -68]], "field_list": ["time", "temp", "pressure", "humidity", "voc", "light", "noise", "noisedba", "battery", "shake", "cable", "voc_resistance", "rssi"], "ok": true}
 {"results": [["2015-08-29T21:50:00Z", 2353, 1013, 52, 924, 0, null, 46, 62, false, false, 87896, -70]], "field_list": ["time", "temp", "pressure", "humidity", "voc", "light", "noise", "noisedba", "battery", "shake", "cable", "voc_resistance", "rssi"], "ok": true}

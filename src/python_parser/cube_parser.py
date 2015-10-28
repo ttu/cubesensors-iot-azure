@@ -13,8 +13,8 @@ class CubeParser(object):
 
         if is_current:
             if len(results) == 0:
-                self.logger.error("No results found.")
-                return []
+                self.logger.error("No results found for %s.", id)
+                return None
             elif len(results) > 1:
                 self.logger.warning("Too many results found. Using only first.")
 
@@ -23,8 +23,7 @@ class CubeParser(object):
 
         return zipped
 
-    def get_devices(self):
-        session = CubeSession.get_session()
+    def get_devices(self, session):
         response = session.get("%s/devices/" % config.RES)
         result = response.json()
         # print(response.headers)
@@ -32,13 +31,15 @@ class CubeParser(object):
         return result
 
     def get_data(self):
-        result = self.get_devices()
+        session = CubeSession.get_session()
+        result = self.get_devices(session)
         parsed_datas = []
         if result["ok"]:
             for device in result["devices"]:
                 cube_data_response = session.get('%s/devices/%s/current' % (config.RES, device["uid"]))
                 parsed = self.parse_current_result(device["uid"], cube_data_response.json(), True)
-                parsed_datas.append(parsed)
+                if parsed:
+                    parsed_datas.append(parsed)
         else:
             self.logger.error("Failed to get devices %s", str(result))
 
