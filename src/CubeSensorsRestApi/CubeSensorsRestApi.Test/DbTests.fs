@@ -58,7 +58,7 @@ let GetSensorStatus () =
 
 [<Test>]
 let GetLatestStatuses() = 
-    let current = Db.GetSensorStatus(Db.getCurrentTime())
+    let current = Db.GetSensorStatus(Db.LastUpdate())
     let allIds = Db.GetSensorIds()
     let mockId = "ABCDEFG12345"
     let mockIds = allIds |> Seq.toList |> List.append [mockId]

@@ -8,7 +8,7 @@ open Microsoft.FSharp.Data.TypeProviders
 
 type SqlConnection = Microsoft.FSharp.Data.TypeProviders.SqlDataConnection<ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=C:\SRC\GITHUB\CUBESENSORS-IOT-AZURE\SAMPLE_DATA\CUBE_DB.MDF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False">
 
-let runtimeConnStr = Config.LocalDb
+let runtimeConnStr = Config.Azure
 
 // If connection string is LocalDb, we will assume this is for development use
 let isDevTime = runtimeConnStr = Config.LocalDb
@@ -208,7 +208,7 @@ let createAllIdStatusList(current, allIds) =
             )
 
 let GetLatestStatuses() =
-    let current = GetSensorStatus(getCurrentTime())
+    let current = GetSensorStatus(LastUpdate())
     let allIds = GetSensorIds()
     createAllIdStatusList(current, allIds)
 

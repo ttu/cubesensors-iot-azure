@@ -6,12 +6,12 @@ open Gecko
 
 let ParseSensorName(id) = 
     match id with
-        | "000D6F0003141E14" -> "Room 1"
-        | "000D6F0003E4EC19" -> "Room 2"
-        | "000D6F0004476483" -> "Room 3"
-        | "000D6F0004491FF6" -> "Room 4"
-        | "000D6F000449280A" -> "Room 5"
-        | "000D6F000449336B" -> "Room 6"
+        | "000D6F0003141E14" -> "Neukkari"
+        | "000D6F0003E4EC19" -> "Pikkuneukkari 2"
+        | "000D6F0004476483" -> "Avotila"
+        | "000D6F0004491FF6" -> "Pikkuneukkari 1"
+        | "000D6F000449280A" -> "Kuntosali"
+        | "000D6F000449336B" -> "Pieni työhuone"
         | _ -> id
 
 let NoiseDiff(data : SqlConnection.ServiceTypes.Cubesensors_data) =
