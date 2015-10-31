@@ -39,6 +39,7 @@ let dataForSensor (sensorId:string, minutes:int) =
     query {
         for r in GetDb().Cubesensors_data do
         where (r.SensorId = sensorId && r.MeasurementTime > getCurrentTime().Subtract(TimeSpan.FromMinutes((float)minutes)))
+        sortByDescending r.MeasurementTime
         select r
     }
 

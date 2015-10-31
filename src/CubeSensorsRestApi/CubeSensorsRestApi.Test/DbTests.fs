@@ -87,3 +87,10 @@ let ParserTests() =
 let WrapToList() =
     let list = Gecko.WrapToList([("test", "test", "ok", "green")])
     Assert.IsTrue(true)
+
+[<Test>]
+let ParseAll() =
+    let list = Parser.ParseAll()
+    Assert.IsTrue(true)
+
+    

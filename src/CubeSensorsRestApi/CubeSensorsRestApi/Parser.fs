@@ -24,27 +24,49 @@ let ParseNoiseAverages(id) =
     let last = System.Math.Round (Db.AvgNoise(id, 3), 3)
     let dailyAvg = System.Math.Round  (Db.AvgNoiseDaily(id), 3)
     let deduct = System.Math.Round (last - dailyAvg, 3)
-    Gecko.WrapToNumber (deduct.ToString(), last.ToString() + " | " + dailyAvg.ToString() + " | " + id)
+    Gecko.WrapToNumber (deduct.ToString(), "Current: " + last.ToString() + " | Average: " + dailyAvg.ToString())
 
 let ParseTempeature(id) =
-    let last = Db.AvgTemperature(id, 1) / 100.0
-    Gecko.WrapToNumber (last.ToString(), DateTime.Now.ToShortTimeString() + " | " + id)
+    let last = Db.AvgTemperature(id, 2) / 100.0
+    Gecko.WrapToNumber (last.ToString(), DateTime.Now.ToShortTimeString())
+
+let GetSensorEmptyData(id : string, datas : seq<SqlConnection.ServiceTypes.Cubesensors_data>, status : Status) =
+    ParseSensorName(id),
+    "No connection",
+    "-",
+    status |> Db.StatusColor
+
+let GetSensorData(id : string, datas : seq<SqlConnection.ServiceTypes.Cubesensors_data>, status : Status) =
+    // Now we expect that data is found from the collection
+    let x = datas |> Seq.filter (fun (k) -> k.SensorId = id) |> Seq.head
+
+    ParseSensorName(x.SensorId), // +  " (" + NoiseDiff(x) + ")", 
+    (float x.Temperature.Value / 100.0).ToString() + " °C | " + 
+    (x.Noise.Value).ToString() + " db | " +
+    x.Light.Value.ToString() + " lux | " +
+    x.Pressure.Value.ToString() + " mBar | " +
+    x.Humidity.Value.ToString() + " % | " +
+    x.Voc.Value.ToString() + " ppm",
+    x.Battery.Value.ToString(),
+    status |> Db.StatusColor
+
+let GetParseFunction (id, ids) = 
+    match id with
+                | id when Seq.exists (fun i -> i = id) ids -> GetSensorData
+                | _ -> GetSensorEmptyData
 
 let ParseAll() =
     let ids = Db.GetSensorIds()
-    let data = ids
-                |> Seq.map (fun id -> Db.AllDataFromDuration(id, 1) |> Seq.toList |> List.head)
+    // Just in case take last 3 mins if there is not available for last min
+    let datas = ids
+                |> Seq.map (fun id -> Db.AllDataFromDuration(id, 3) |> Seq.toList)
+                |> Seq.filter (fun i -> i.Length > 0)
+                |> Seq.map (fun i -> List.head i)
 
     let statuses = Db.GetLatestStatuses()
 
-    data
-        |> Seq.map (fun x -> ParseSensorName(x.SensorId), // +  " (" + NoiseDiff(x) + ")", 
-                                (float x.Temperature.Value / 100.0).ToString() + " °C | " + 
-                                (x.Noise.Value).ToString() + " db | " +
-                                x.Light.Value.ToString() + " lux | " +
-                                x.Pressure.Value.ToString() + " mBar | " +
-                                x.Humidity.Value.ToString() + " % | " +
-                                x.Voc.Value.ToString() + " ppm",
-                                x.Battery.Value.ToString(),
-                                statuses |> Seq.filter (fun (k,v) -> k = x.SensorId) |> Seq.head |> snd |> Db.StatusColor)
+    let ids = datas |> Seq.map (fun m -> m.SensorId)
+                                        
+    statuses
+        |> Seq.map (fun x -> GetParseFunction(fst x, ids)(fst x, datas, snd x))                           
         |> Gecko.WrapToList
