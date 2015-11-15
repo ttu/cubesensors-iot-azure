@@ -26,3 +26,10 @@ GROUP BY
 (DATEPART(HOUR, c1.MeasurementTime)),
 (DATEPART(MINUTE, c1.MeasurementTime) / 30)
 ORDER BY M1 ASC
+
+-- Select last rows for each sensor (just check from last 10h beacause this is pretty slow)
+SELECT d1.*
+FROM cubesensors_data d1 LEFT JOIN cubesensors_data d2
+ON (d1.SensorId = d2.SensorId AND d1.MeasurementTime < d2.MeasurementTime)
+WHERE d2.MeasurementTime IS NULL
+AND d1.MeasurementTime > DATEADD(hour, -10, GETDATE())

@@ -1,0 +1,3 @@
+requests
+rauth
+pypyodbc

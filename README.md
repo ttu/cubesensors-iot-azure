@@ -3,6 +3,9 @@
 * src/python_parser
   * Python Parser
   * Gets data from CubeSensorsAPI, parses data to selected format and sends it to Event Hub.
+* src/python_checker
+  * Check sensor status from database
+  * Trigger IFTTT actions
 * src/CubeSensorsRestApi
   * F# REST API (Suave)
   * Gets data from database. Simple authentication.
@@ -74,4 +77,8 @@ WHERE cable = false AND battery < 10
 ### Database
 
 Database creation scripts are in .\src\database folder. Some configurations in the beginning of the create script are required by LocalDB.
+
+## IFTTT
+
+TODO
 
