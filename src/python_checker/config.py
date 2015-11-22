@@ -11,3 +11,5 @@ db_server = keys.db_server
 
 # IFTTT
 ifttt_api_key = keys.ifttt_api_key
+ifttt_event_on = keys.ifttt_event_on
+ifttt_event_off = keys.ifttt_event_off

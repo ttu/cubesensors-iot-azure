@@ -38,16 +38,14 @@ if __name__ == '__main__':
         battery = row[1]
         cable = row[2]
   
-        # If battery < 10 and cable 0 time to charge
-        # But start charging only when utc time is over 22.00
-        if battery < 10 and cable == 0: and current_hour > 21:
-            logger.debug("Request charging %s (%s : %s)",  sensor_id, battery, cable)
-            IFTTT.sendCharge(sensor_id)
+        if battery <= 10 and cable == 0 and current_hour > 19:
+            logger.debug("Request charging %s (%s : %s)" % (sensor_id, battery, cable))
+            IFTTT.sendEvent(config.ifttt_api_key, sensor_id + config.ifttt_event_on)
         
         # Stop charging when nearing 100    
-        if cable == 1 and battery > 98:
-            logger.debug("Request unplug %s (%s : %s)",  sensor_id, battery, cable)
-            IFTTT.sendStopCharge(sensor_id)
+        if cable == 1 and battery > 96:
+            logger.debug("Request unplug %s (%s : %s)" %  (sensor_id, battery, cable))
+            IFTTT.sendEvent(config.ifttt_api_key, sensor_id + config.ifttt_event_off)
             
        
       
