@@ -19,6 +19,11 @@ cube_access_token_secret = "VALUE"
 
 azure_servicebus_namespace = "VALUE"
 cubesender_private_key = "VALUE"
+
+db_user = "VALUE"
+db_password = "VALUE"
+db_name = "VALUE"
+db_server = "VALUE"
 ```
 
 #### VirtualEnv (Ubuntu)

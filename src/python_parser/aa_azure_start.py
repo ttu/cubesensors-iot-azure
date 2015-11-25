@@ -14,15 +14,15 @@ import config
 
 from azure_helper import EventHubHelper
 from cube_parser import CubeParser
+from database import DataStore
 
 logging.config.fileConfig('log.config')
-logger = logging.getLogger('cubesensors')
+logger = logging.getLogger(config.logger_name)
 
 
 def myExceptionHook(exctype, value, traceback):
     logger.error(value)
     sys.__excepthook__(exctype, value, traceback)
-
 
 if __name__ == '__main__':
     sys.excepthook = myExceptionHook
@@ -30,5 +30,11 @@ if __name__ == '__main__':
     print("Running at %s" % datetime.utcnow())
     datas = CubeParser().get_data()
     print("Latest data: %s" % datas[0]["time"])
-    data_json = json.dumps(datas)
-    EventHubHelper.send_request(config.servicebus_namespace, config.eventhub_name, config.eventhub_key_name, config.eventhub_private_key, data_json)
+    
+    if config.use_event_hub:
+        data_json = json.dumps(datas)
+        EventHubHelper.send_request(config.servicebus_namespace, config.eventhub_name, config.eventhub_key_name, config.eventhub_private_key, data_json)
+    else:
+        db = DataStore(config.db_server, config.db_name, config.db_user, config.db_password)
+        data_rows = db.parse_to_db_format(datas)
+        db.send_request(data_rows)

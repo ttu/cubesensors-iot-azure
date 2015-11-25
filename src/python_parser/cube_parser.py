@@ -6,7 +6,7 @@ from cube_session import CubeSession
 class CubeParser(object):
 
     def __init__(self):
-        self.logger = logging.getLogger('cubesensors')
+        self.logger = logging.getLogger(config.logger_name)
 
     def parse_current_result(self, id, full_json, is_current):
         results = full_json["results"]

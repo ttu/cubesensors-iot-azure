@@ -1,3 +1,4 @@
 requests
 rauth
 nose
+pypyodbc
