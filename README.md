@@ -2,7 +2,7 @@
 
 * src/python_parser
   * Python Parser
-  * Gets data from CubeSensorsAPI, parses data to selected format and sends it to Event Hub.
+  * Gets data from CubeSensorsAPI, parses data to selected format and sends it to Event Hub or straight to database
 * src/python_checker
   * Check sensor status from database
   * Trigger IFTTT actions
