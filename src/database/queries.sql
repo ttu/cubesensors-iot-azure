@@ -1,5 +1,9 @@
 -- All data from last 60min
 SELECT * FROM cubesensors_data
+WHERE MeasurementTime > DATEADD(minute, -61, GETDATE())
+
+-- All data from last 60min
+SELECT * FROM cubesensors_data
 WHERE SensorId = '000D6F0004476483' AND MeasurementTime > DATEADD(minute, -61, GETDATE())
 
 -- Select Averages from last 60min

@@ -29,7 +29,7 @@ db_server = "VALUE"
 #### VirtualEnv (Ubuntu)
 
 ```sh
-apt-get install python-virtualenv
+apt-get install python3-dev python-virtualenv
 virtualenv -p /usr/bin/python3 env
 source env/bin/activate
 pip install -r requirements.txt
@@ -45,6 +45,12 @@ env\Scripts\activate
 pip install -r requirements.txt
 python XXXX.py
 env\Scripts\deactivate
+```
+
+#### Prerequirements (Ubuntu)
+
+```sh
+sudo apt-get install freetds-dev freetds-bin
 ```
 
 #### Tests
