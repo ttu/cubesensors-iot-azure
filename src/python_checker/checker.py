@@ -38,7 +38,7 @@ if __name__ == '__main__':
         battery = row[1]
         cable = row[2]
          
-        if battery <= 10 and cable == 0 and current_hour > 19:
+        if battery <= 15 and cable == 0 and current_hour > 19:
             logger.debug("Request charging %s (%s : %s)" % (sensor_id, battery, cable))
             IFTTT.sendEvent(config.ifttt_api_key, sensor_id + config.ifttt_event_on)
         
