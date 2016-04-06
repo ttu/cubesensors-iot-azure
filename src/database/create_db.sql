@@ -37,3 +37,5 @@ CREATE TABLE dbo.cubesensors_data (
   Rssi INT,
   PRIMARY KEY (SensorId, MeasurementTime)
 );
+
+CREATE INDEX idx_MeasurementTime ON dbo.cubesensors_data (MeasurementTime);

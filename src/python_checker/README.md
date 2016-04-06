@@ -14,3 +14,9 @@ ifttt_api_key = "VALUE"
 #### VirtualEnv, Tests & Cron
 
 Check \src\python_parses\README.md
+
+Execute hourly
+```sh
+SHELL=/bin/bash
+0 * * * * cd /home/stetson/python_checker && source env/bin/activate && python checker.py
+```

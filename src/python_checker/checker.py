@@ -30,14 +30,14 @@ if __name__ == '__main__':
     
     store = DataStore(config.db_server, config.db_name, config.db_user, config.db_password)
     rows = store.getSensorBatteryStatuses()
-    
+        
     current_hour = datetime.utcnow().hour
     
     for row in rows:
         sensor_id = row[0]
         battery = row[1]
         cable = row[2]
-  
+         
         if battery <= 10 and cable == 0 and current_hour > 19:
             logger.debug("Request charging %s (%s : %s)" % (sensor_id, battery, cable))
             IFTTT.sendEvent(config.ifttt_api_key, sensor_id + config.ifttt_event_on)
@@ -46,6 +46,3 @@ if __name__ == '__main__':
         if cable == 1 and battery > 96:
             logger.debug("Request unplug %s (%s : %s)" %  (sensor_id, battery, cable))
             IFTTT.sendEvent(config.ifttt_api_key, sensor_id + config.ifttt_event_off)
-            
-       
-      
