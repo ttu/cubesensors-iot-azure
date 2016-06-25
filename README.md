@@ -76,9 +76,18 @@ WHERE cable = false AND battery < 10
 
 ### Database
 
-Database creation scripts are in .\src\database folder. Some configurations in the beginning of the create script are required by LocalDB.
+Database creation scripts are in .\src\database folder. Some configurations in the beginning of the create script are required by SQL Server LocalDB.
 
 ## IFTTT
 
-TODO
+Start charging sensors automatically when battery level is down. IFTTT Maker channel is used to send messages to connected to smart plugs.
 
+* Get latest measurement for each sensor from the db where it either requires charging or unplugging
+  * Requires charging if battery level under 15 and not plugged in. Start chargin only after 7PM (UTC).
+  * Unplug if battery level over 96 and plugged in
+* Send on or off message to IFTTT with sensorId an action (_on or _off) as event
+```
+https://maker.ifttt.com/trigger/EVENT_NAME/with/key/API_KEY
+e.g.
+https://maker.ifttt.com/trigger/000D6F000449287A_on/with/key/copx80nTQbGdfsPEXptkdd8dN1KobKyZiBlZezpoRKDFSD
+```

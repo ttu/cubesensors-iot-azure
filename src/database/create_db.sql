@@ -38,4 +38,11 @@ CREATE TABLE dbo.cubesensors_data (
   PRIMARY KEY (SensorId, MeasurementTime)
 );
 
+CREATE TABLE dbo.cubesensors_location (
+  SensorId NVARCHAR(20) NOT NULL,
+  ActivationTime DATETIME2 NOT NULL,  
+  Location NVARCHAR(MAX) NOT NULL
+  PRIMARY KEY (SensorId, ActivationTime)
+);
+
 CREATE INDEX idx_MeasurementTime ON dbo.cubesensors_data (MeasurementTime);
