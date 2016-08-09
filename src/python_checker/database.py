@@ -18,12 +18,10 @@ class DataStore(object):
 
     def getSensorBatteryStatuses(self):
         stmt = '''
-        SELECT d1.SensorId, d1.Battery, d1.Cable
-        FROM cubesensors_data d1 LEFT JOIN cubesensors_data d2
-        ON (d1.SensorId = d2.SensorId AND d1.MeasurementTime < d2.MeasurementTime)
-        WHERE d2.MeasurementTime IS NULL
-        AND ((d1.Battery < 10 AND d1.Cable = 0) OR (d1.Battery > 97 AND d1.Cable = 1))
-        AND d1.MeasurementTime > DATEADD(hour, -10, GETDATE())
+        SELECT t1.SensorId, t1.Battery, t1.Cable FROM cubesensors_data t1
+        JOIN (SELECT SensorId, MAX(MeasurementTime) MeasurementTime FROM cubesensors_data GROUP BY SensorId) t2
+        ON t1.SensorId = t2.SensorId AND t1.MeasurementTime = t2.MeasurementTime
+        WHERE ((t1.Battery < 10 AND t1.Cable = 0) OR (t1.Battery > 97 AND t1.Cable = 1))
         '''
 
         try:

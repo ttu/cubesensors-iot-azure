@@ -37,3 +37,8 @@ FROM cubesensors_data d1 LEFT JOIN cubesensors_data d2
 ON (d1.SensorId = d2.SensorId AND d1.MeasurementTime < d2.MeasurementTime)
 WHERE d2.MeasurementTime IS NULL
 AND d1.MeasurementTime > DATEADD(hour, -10, GETDATE())
+
+-- Select last rows for each sensor (slower but will check all rows)
+SELECT t1.* FROM cubesensors_data t1
+JOIN (SELECT SensorId, MAX(MeasurementTime) MeasurementTime FROM cubesensors_data GROUP BY SensorId) t2
+ON t1.SensorId = t2.SensorId AND t1.MeasurementTime = t2.MeasurementTime
