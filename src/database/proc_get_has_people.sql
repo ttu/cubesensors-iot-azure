@@ -49,14 +49,14 @@ BEGIN
 	
 	/*
 	TODO: Find better way than to compare against last 24h average
-	TODO: Calculta return value based on probablity of having people on sensors proximity
+	TODO: Calculate return value based on probablity of having people on sensor's proximity
 	TODO: Use also Voc (NOTE: Voc levels in the morning are below average)
 
 	Light value is usally over 400 when lights are on, but we can assume that no one is here if it's too dark.
 	The problem is with weekends as averages are so low, this can assume that even when there is little more light
 	than on average, this will think that someone is at the office.
 	*/ 
-	IF @CurrentNoise > @AvgNoise AND @CurrentLight > @AvgLight AND @CurrentLight > 100
+	IF @CurrentNoise > @AvgNoise AND @CurrentLight > @AvgLight AND @CurrentLight > 20
 		RETURN(100)
 	
 	RETURN(0)	
