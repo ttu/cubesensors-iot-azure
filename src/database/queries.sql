@@ -42,3 +42,8 @@ AND d1.MeasurementTime > DATEADD(hour, -10, GETDATE())
 SELECT t1.* FROM cubesensors_data t1
 JOIN (SELECT SensorId, MAX(MeasurementTime) MeasurementTime FROM cubesensors_data GROUP BY SensorId) t2
 ON t1.SensorId = t2.SensorId AND t1.MeasurementTime = t2.MeasurementTime
+
+-- Execute get_has_people procedure
+DECLARE @result int
+EXEC @result = dbo.get_has_people '000D6F0004476483'
+SELECT @result

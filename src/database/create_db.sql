@@ -45,4 +45,13 @@ CREATE TABLE dbo.cubesensors_location (
   PRIMARY KEY (SensorId, ActivationTime)
 );
 
+CREATE TABLE dbo.cubesensors_averages (
+  QueryDate DATETIME2 NOT NULL,
+  SensorId NVARCHAR(20) NOT NULL,
+  AvgNoise float,
+  AvgLight float,
+  AvgVoc float,
+  PRIMARY KEY (QueryDate, SensorId)
+);
+
 CREATE INDEX idx_MeasurementTime ON dbo.cubesensors_data (MeasurementTime);
