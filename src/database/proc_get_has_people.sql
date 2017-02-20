@@ -49,7 +49,7 @@ BEGIN
 			)
 		)
 
-		INSERT INTO sensors_averages 
+		INSERT INTO cubesensors_averages 
 		VALUES (CONVERT(date, GETDATE()), @SensorId, @AvgNoise, @AvgLight, @AvgVoc) 
 	END
 	
